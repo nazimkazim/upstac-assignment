@@ -54,7 +54,10 @@ public class ConsultationController {
 
         // Implement this method
 
+
+        // Doctor receives all the test requests that have LAB_TEST_COMPLETED status
         return testRequestQueryService.findBy(RequestStatus.LAB_TEST_COMPLETED);
+
         //Implement this method to get the list of test requests having status as 'LAB_TEST_COMPLETED'
         // make use of the findBy() method from testRequestQueryService class
         //return the result
@@ -68,6 +71,10 @@ public class ConsultationController {
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public List<TestRequest> getForDoctor()  {
 
+        // Doctor receives all the requests that are assigned to him/her
+        User doctor = userLoggedInService.getLoggedInUser();
+        return testRequestQueryService.findByTester(doctor);
+
         //Implement this method
 
         // Create an object of User class and store the current logged in user first
@@ -76,8 +83,6 @@ public class ConsultationController {
         // For reference check the method getForTests() method from LabRequestController class
 
         // replace this line of code with your implementation
-        User doctor = userLoggedInService.getLoggedInUser();
-        return testRequestQueryService.findByTester(doctor);
         //throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,"Not implemented");
 
 
@@ -91,16 +96,8 @@ public class ConsultationController {
     @PutMapping("/assign/{id}")
     public TestRequest assignForConsultation(@PathVariable Long id) {
 
-        // Implement this method
-
-        // Implement this method to assign a particular test request to the current doctor(logged in user)
-        //Create an object of User class and get the current logged in user
-        //Create an object of TestRequest class and use the assignForConsultation() method of testRequestUpdateService to assign the particular id to the current user
-        // return the above created object
-        // For reference check the method assignForLabTest() method from LabRequestController class
-
         try {
-            // replace this line of code with your implementation
+            // Doctor assigns a test to himself/herself
             User doctor =userLoggedInService.getLoggedInUser();
             return   testRequestUpdateService.assignForConsultation(id, doctor);
             //throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,"Not implemented");
@@ -108,6 +105,13 @@ public class ConsultationController {
         }catch (AppException e) {
             throw asBadRequest(e.getMessage());
         }
+        // Implement this method
+
+        // Implement this method to assign a particular test request to the current doctor(logged in user)
+        //Create an object of User class and get the current logged in user
+        //Create an object of TestRequest class and use the assignForConsultation() method of testRequestUpdateService to assign the particular id to the current user
+        // return the above created object
+        // For reference check the method assignForLabTest() method from LabRequestController class
     }
 
 
@@ -116,16 +120,8 @@ public class ConsultationController {
     @PutMapping("/update/{id}")
     public TestRequest updateConsultation(@PathVariable Long id,@RequestBody CreateConsultationRequest testResult) {
 
-        // Implement this method
-
-        // Implement this method to update the result of the current test request id with test doctor comments
-        // Create an object of the User class to get the logged in user
-        // Create an object of TestRequest class and make use of updateConsultation() method from testRequestUpdateService class
-        //to update the current test request id with the testResult details by the current user(object created)
-        // For reference check the method updateLabTest() method from LabRequestController class
-
         try {
-            // replace this line of code with your implementation
+            // Doctor updates a test request
             User doctor=userLoggedInService.getLoggedInUser();
             return testRequestUpdateService.updateConsultation(id,testResult,doctor);
             //throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,"Not implemented");
@@ -136,6 +132,14 @@ public class ConsultationController {
         }catch (AppException e) {
             throw asBadRequest(e.getMessage());
         }
+
+        // Implement this method
+
+        // Implement this method to update the result of the current test request id with test doctor comments
+        // Create an object of the User class to get the logged in user
+        // Create an object of TestRequest class and make use of updateConsultation() method from testRequestUpdateService class
+        //to update the current test request id with the testResult details by the current user(object created)
+        // For reference check the method updateLabTest() method from LabRequestController class
     }
 
 
